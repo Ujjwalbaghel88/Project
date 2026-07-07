@@ -15,7 +15,7 @@ export const AuthProtect = async (req, res, next) => {
     const decode = await jwt.verify(token, process.env.JWT_SECRET);
     if (!decode) {
       const error = new Error("Session Expired");
-      error.statusCode = 401;
+      error.statusCode = 401; 
       return next(error);
     }
 
