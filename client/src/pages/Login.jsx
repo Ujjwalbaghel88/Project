@@ -59,19 +59,19 @@ const Login = () => {
       setIsLogin(true);
       //console.log(res.data.data.userType);
       setRole(res.data.data.userType);
-      if (res.data.data.userType === "restaurant") {
+
+      res.data.data.userType === "restaurant" &&
         navigate("/restaurant-dashboard");
-      } else if (res.data.data.userType === "rider") {
-        navigate("/rider-dashboard");
-      } else if (res.data.data.userType === "admin") {
-        navigate("/admin-dashboard");
-      } else {
-        navigate("/customer-dashboard");
-      }
+
+      res.data.data.userType === "rider" && navigate("/rider-dashboard");
+
+      res.data.data.userType === "admin" && navigate("/admin-dashboard");
+
+      res.data.data.userType === "customer" && navigate("/customer-dashboard");
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
-          "Unknown error occurred during registration. Please try again.",
+        "Unknown error occurred during registration. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -101,11 +101,10 @@ const Login = () => {
               value={formData.email}
               onChange={handleInputChange}
               placeholder="Enter your email"
-              className={`w-full px-3 py-2 border rounded-md text-sm text-(--color-neutral) placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${
-                errors.email
-                  ? "border-(--color-error) border-2"
-                  : "border-(--color-base-300)"
-              }`}
+              className={`w-full px-3 py-2 border rounded-md text-sm text-(--color-neutral) placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${errors.email
+                ? "border-(--color-error) border-2"
+                : "border-(--color-base-300)"
+                }`}
             />
             {errors.email && (
               <span className="text-(--color-error) text-xs mt-1 block">
@@ -126,11 +125,10 @@ const Login = () => {
                 value={formData.password}
                 onChange={handleInputChange}
                 placeholder="Enter your password"
-                className={`w-full px-3 py-2 border rounded-md text-sm text-(--color-neutral) placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${
-                  errors.password
-                    ? "border-(--color-error) border-2"
-                    : "border-(--color-base-300)"
-                }`}
+                className={`w-full px-3 py-2 border rounded-md text-sm text-(--color-neutral) placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${errors.password
+                  ? "border-(--color-error) border-2"
+                  : "border-(--color-base-300)"
+                  }`}
               />
               <button
                 type="button"
