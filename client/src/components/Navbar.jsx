@@ -37,7 +37,7 @@ const Navbar = () => {
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
-          "Unknown error occurred during registration. Please try again.",
+        "Unknown error occurred during registration. Please try again.",
       );
     }
   };
@@ -65,8 +65,8 @@ const Navbar = () => {
               />
               <div className="flex flex-col items-start">
                 <span className="text-base">{user?.fullName}</span>
-                <span className="text-xs text-(--color-primary-content)/80">
-                  Customer
+                <span className="text-xs text-(--color-primary-content)/80 uppercase">
+                  {role}
                 </span>
               </div>
             </button>
