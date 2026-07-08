@@ -5,7 +5,7 @@ const UserData = [
   {
     fullName: "Manager1",
     email: "Manager1@gmail.com",
-    password: await bcrypt.hash("Manager@123", 10),
+    password: await bcrypt.hash("manager@123", 10),
     dob: "2000-01-01",
     gender: "other",
     userType: "restaurant",
@@ -15,7 +15,7 @@ const UserData = [
   {
     fullName: "Customer1",
     email: "Customer1@gmail.com",
-    password: await bcrypt.hash("Customer@123", 10),
+    password: await bcrypt.hash("customer@123", 10),
     dob: "2000-01-01",
     gender: "other",
     userType: "customer",
@@ -25,7 +25,7 @@ const UserData = [
   {
     fullName: "Rider1",
     email: "Rider1@gmail.com",
-    password: await bcrypt.hash("Rider@123", 10),
+    password: await bcrypt.hash("rider@123", 10),
     dob: "2000-01-01",
     gender: "other",
     userType: "rider",
