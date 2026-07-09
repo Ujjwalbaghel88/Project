@@ -32,6 +32,7 @@ export const EditUserProfile = async (req, res, next) => {
         width: 500,
         height: 500,
         crop: "fill",
+
       });
 
       console.log(result);
