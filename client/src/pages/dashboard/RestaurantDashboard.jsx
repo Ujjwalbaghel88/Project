@@ -1,5 +1,4 @@
 import React from "react";
-import Sidebar from "../../components/customerDashboard/Sidebar";
 import RestaurantOrders from "../../components/restaurantDashboard/RestaurantOrders";
 import RestaurantOverview from "../../components/restaurantDashboard/RestaurantOverview";
 import RestaurantSetting from "../../components/restaurantDashboard/RestaurantSetting";
