@@ -1,6 +1,9 @@
 import express from "express";
 import multer from "multer";
-import { restaurantUpdateProfile } from "../controller/restaurant.controller.js";
+import {
+    RestaurantUpdateProfile,
+    RestaurantGetData,
+} from "../controller/restaurant.controller.js";
 import { RestaurantAuthProtect } from "../middleware/auth.middelware.js";
 
 const upload = multer();
@@ -11,7 +14,9 @@ router.post(
     RestaurantAuthProtect,
     upload.single("coverImage"),
     upload.array("restaurantImage", 10),
-    restaurantUpdateProfile,
+    RestaurantUpdateProfile,
 );
+
+router.get("/get-resturant-data", RestaurantAuthProtect, RestaurantGetData);
 
 export default router;

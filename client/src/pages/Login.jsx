@@ -74,7 +74,7 @@ const Login = () => {
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
-        "Unknown error occurred during registration. Please try again.",
+        "Unknown error occurred during Login. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -106,8 +106,8 @@ const Login = () => {
                 onChange={handleInputChange}
                 placeholder="Enter your email"
                 className={`w-full px-3 py-2 border rounded-md text-sm text-(--color-neutral) placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${errors.email
-                    ? "border-(--color-error) border-2"
-                    : "border-(--color-base-300)"
+                  ? "border-(--color-error) border-2"
+                  : "border-(--color-base-300)"
                   }`}
               />
               {errors.email && (
@@ -130,8 +130,8 @@ const Login = () => {
                   onChange={handleInputChange}
                   placeholder="Enter your password"
                   className={`w-full px-3 py-2 border rounded-md text-sm text-(--color-neutral) placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${errors.password
-                      ? "border-(--color-error) border-2"
-                      : "border-(--color-base-300)"
+                    ? "border-(--color-error) border-2"
+                    : "border-(--color-base-300)"
                     }`}
                 />
                 <button
