@@ -1,24 +1,23 @@
 import React from "react";
-import RestaurantOrders from "../../components/restaurantDashboard/RestaurantOrders";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import RestaurantSidebar from "../../components/restaurantDashboard/RestaurantSidebar";
 import RestaurantOverview from "../../components/restaurantDashboard/RestaurantOverview";
 import RestaurantSetting from "../../components/restaurantDashboard/RestaurantSetting";
-import RestaurantSidebar from "../../components/restaurantDashboard/RestaurantSidebar";
-
-import { useLocation , useNavigate} from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import RestaurantOrders from "../../components/restaurantDashboard/RestaurantOrders";
 
 const RestaurantDashboard = () => {
-  const { isLogin,role } = useAuth();
+  const { isLogin, role } = useAuth();
   const navigate = useNavigate();
   const active = useLocation().state?.activeTab;
-  const [activeTab, setActiveTab] = React.useState(active || "overview");
+  const [activeTab, setActiveTab] = React.useState(active || "settings");
 
-  if (!isLogin || role!=="restaurant") {
+  if (!isLogin || role !== "restaurant") {
     return (
       <div className="h-[92vh] bg-[url('/foodTable.webp')]  bg-cover bg-center">
         <div className="h-full backdrop-blur-lg flex flex-col items-center justify-center ">
           <h1 className="text-2xl font-bold text-(--color-neutral-content)">
-            Access Denied. Please log in as a restaurnat manager to view this
+            Access Denied. Please log in as a Restaurant Manager to view this
             page.
           </h1>
           <button
@@ -32,12 +31,14 @@ const RestaurantDashboard = () => {
     );
   }
 
-
   return (
     <>
-      <div className="h-[92vh] flex gap-2 m-2">
+      <div className="h-[91vh] flex gap-2 p-2">
         <div className="w-3/17 bg-(--color-base-200) p-4 rounded-lg shadow-md h-full">
-          <RestaurantSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+          <RestaurantSidebar
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
         </div>
         <div className="w-14/17 bg-(--color-base-100) p-4 rounded-lg shadow-md h-full">
           {activeTab === "overview" && <RestaurantOverview />}
