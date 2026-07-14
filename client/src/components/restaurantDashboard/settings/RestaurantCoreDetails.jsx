@@ -7,7 +7,7 @@ import { MdOutlineAddAPhoto, MdOutlineLockReset } from "react-icons/md";
 import PasswordChangeModal from "../../commonModals/PasswordChangeModal";
 import RunningLoader from "../../../assets/runningLoader.gif";
 
-const ResturantCoreDetails = () => {
+const RestaurantCoreDetails = () => {
     const { user, setUser } = useAuth();
 
     // Common State variables
@@ -472,4 +472,4 @@ const ResturantCoreDetails = () => {
     );
 };
 
-export default ResturantCoreDetails;
+export default RestaurantCoreDetails;
