@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 const UserData = [
   {
     fullName: "Manager1",
-    email: "Manager1@gmail.com",
+    email: "manager1@gmail.com",
     password: await bcrypt.hash("manager@123", 10),
     dob: "2000-01-01",
     gender: "other",
