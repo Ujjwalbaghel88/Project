@@ -1,5 +1,4 @@
 import React from "react";
-
 const CustomerOverview = () => {
   return (
     <div className="overflow-y-auto h-full">
