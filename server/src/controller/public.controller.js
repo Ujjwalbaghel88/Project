@@ -20,7 +20,7 @@ export const ContactUsForm = async (req, res, next) => {
     res
       .status(201)
       .json({
-        message: "Thanks for Contacting us! You will hear back from us soon",
+        message: "Thanks for Contacting US! You will hear back from us soon",
       });
   } catch (error) {
     console.log(error.message);
