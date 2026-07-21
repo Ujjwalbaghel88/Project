@@ -153,7 +153,7 @@ const Home = () => {
             <IoSearch className="text-(--color-base-content) text-xl mr-3" />
             <input
               type="text"
-              placeholder="Search restaurants or dishes..."
+              placeholder="Search restaurants or dishes...."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="bg-(--color-base-100) w-full outline-none text-(--color-primary)"
