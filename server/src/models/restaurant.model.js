@@ -24,6 +24,12 @@ const RestaurantSchema = mongoose.Schema(
       },
     },
 
+    legal: {
+      type: {
+        legalName: { type: String, required: true },
+        companyType: { type: String, required: true },
+      },
+    },
     documents: {
       type: {
         legalName: { type: String, required: true },

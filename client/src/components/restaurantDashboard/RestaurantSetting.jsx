@@ -3,8 +3,7 @@ import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import { RiLoader4Fill } from "react-icons/ri";
 import { useAuth } from "../../context/AuthContext";
-
-import RestaurantCoreDetails from "./settings/RestaurnatCoreDetails";
+import RestaurantCoreDetails from "./settings/RestaurantCoreDetails";
 import Information from "./settings/restaurantInformation/Index";
 import RestaurantPhotos from "./settings/RestaurantPhotos";
 import Loader from "../../assets/runningLoader.gif";
@@ -21,7 +20,7 @@ const RestaurantSetting = () => {
 
   const [isLoadingResturantOpen, setIsLoadingResturantOpen] = useState(true);
   const [isRestaurantOpen, setIsRestaurantOpen] = useState(
-    sessionStorage.getItem("RestaurantOpen") || false,
+    () => sessionStorage.getItem("RestaurantOpen") === "true",
   );
 
   //Load Restaurant Data
@@ -73,6 +72,7 @@ const RestaurantSetting = () => {
         "cravingRestaurant",
         JSON.stringify(res.data.data),
       );
+      sessionStorage.setItem("RestaurantOpen", res.data.data.isOpen);
 
       toast.success(res.data.message);
     } catch (error) {
@@ -86,10 +86,10 @@ const RestaurantSetting = () => {
   };
 
   useEffect(() => {
-    fetchRestaurantData();
+    if (user?._id) {
+      fetchRestaurantData();
+    }
   }, [user]);
-
-  console.log(isRestaurantOpen);
 
   return (
     <>
@@ -116,7 +116,7 @@ const RestaurantSetting = () => {
                 type="checkbox"
                 name="isOpen"
                 checked={isRestaurantOpen}
-                onClick={handleRestaurantOpen}
+                onChange={handleRestaurantOpen}
                 className=" w-4 h-4 accent-(--color-primary)"
               />
             )}
@@ -128,7 +128,7 @@ const RestaurantSetting = () => {
         ) : (
           <div className="h-full rounded-lg bg-(--color-base-200) p-2">
             {activeTab === "information" && <Information />}
-            {activeTab === "coreDetails" && <ResturantCoreDetails />}
+            {activeTab === "coreDetails" && <RestaurantCoreDetails />}
             {activeTab === "photos" && <RestaurantPhotos />}
           </div>
         )}
