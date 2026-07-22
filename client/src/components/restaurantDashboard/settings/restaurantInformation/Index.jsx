@@ -1,6 +1,7 @@
 import React from "react";
-import PresonalInformation from "./PresonalInformation";
-import RestaurantInformation from "../RestaurantInformation";
+import PersonalInformation from "./PersonalInformation";
+
+import RestaurantInformation from "./RestaurantInformation";
 import LeagalInformation from "./LegalInformation";
 
 const Index = () => {

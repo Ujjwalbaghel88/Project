@@ -3,7 +3,8 @@ import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import { RiLoader4Fill } from "react-icons/ri";
 import { useAuth } from "../../context/AuthContext";
-import ResturantCoreDetails from "./settings/ResturantCoreDetails";
+
+import RestaurantCoreDetails from "./settings/RestaurnatCoreDetails";
 import Information from "./settings/restaurantInformation/Index";
 import RestaurantPhotos from "./settings/RestaurantPhotos";
 import Loader from "../../assets/runningLoader.gif";
