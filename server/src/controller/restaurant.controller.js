@@ -397,3 +397,38 @@ export const RestaurantAddMenuItem = async (req, res, next) => {
         next();
     }
 };
+
+export const RestaurantMenuItems = async (req, res, next) => {
+    try {
+        const currentUser = req.user;
+
+        const existingRestaurant = await Restaurant.findOne({
+            managerId: currentUser._id,
+        });
+        if (!existingRestaurant) {
+            const error = new Error("Restaurant Not Found");
+            error.statusCode = 404;
+            return next(error);
+        }
+
+        const existingMenuItem = await Menu.findOne({
+            restaurantId: existingRestaurant._id,
+        });
+
+        if (!existingMenuItem) {
+            const error = new Error("Menu Items Not Found");
+            error.statusCode = 404;
+            return next(error);
+        }
+
+        // console.log("Existing Menu Items:", existingMenuItem.menuItems);
+
+        return res.status(200).json({
+            message: "Menu items fetched successfully",
+            data: existingMenuItem.menuItems,
+        });
+    } catch (error) {
+        console.log(error.message);
+        next();
+    }
+};
