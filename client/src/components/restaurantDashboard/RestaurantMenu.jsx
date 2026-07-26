@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { FaAward, FaRegGrinStars } from "react-icons/fa";
-import { BiSolidDish } from "react-icons/bi";
+import { useState, useEffect } from "react";
+import { FaAward } from "react-icons/fa";
 import { LuPencilLine, LuTrash2, LuEye, LuChevronDown } from "react-icons/lu";
 import { AiTwotoneLike } from "react-icons/ai";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import ConfirmModal from "./menuItems/ConfirmModal";
 import AddNewItemModal from "./menuItems/AddNewItemModal";
+import EditOrViewItem from "./menuItems/EditOrViewItem";
 import api from "../../config/ApiConfig";
 import toast from "react-hot-toast";
 import Loader from "../Loader";
@@ -35,29 +35,39 @@ const RestaurantMenu = () => {
   const fetchMenuItems = async () => {
     try {
       setIsLoading(true);
-      const response = await api.get("/restaurant/menu-items");
+      const response = await api.get("/restaurant/menu-items", {
+        params: { t: Date.now() },
+      });
       setMenuItems(response.data.data);
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
-        "Unknown error occurred while fetching menu items. Please try again.",
+          "Unknown error occurred while fetching menu items. Please try again.",
       );
     } finally {
       setIsLoading(false);
     }
   };
   useEffect(() => {
-    if (
-      isAddNewItemModalOpen ||
-      isEditViewItemModalOpen ||
-      isControlsModalOpen
-    ) {
-      return; // Skip fetching if any modal is open
-    }
-    fetchMenuItems();
-  }, [isAddNewItemModalOpen, isEditViewItemModalOpen, isControlsModalOpen]);
+    queueMicrotask(() => {
+      fetchMenuItems();
+    });
+  }, []);
 
-  console.log(menuItems);
+  const handleStatusChange = async (itemId, status) => {
+    try {
+      const response = await api.patch(
+        `/restaurant/menu-item/${itemId}/status?status=${encodeURIComponent(status)}`,
+      );
+      toast.success(response.data.message || "Item status updated");
+      await fetchMenuItems();
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message ||
+          "Unable to update item status. Please try again.",
+      );
+    }
+  };
 
   if (isLoading) {
     return <Loader height="100%" width="100%" />;
@@ -103,7 +113,7 @@ const RestaurantMenu = () => {
               <>
                 {menuItems.map((item, index) => (
                   <div
-                    key={index}
+                    key={item._id || index}
                     className="grid grid-cols-7 gap-4 border-b border-(--color-secondary) py-2 items-center"
                   >
                     <div className="col-span-2 flex items-center gap-4">
@@ -130,10 +140,11 @@ const RestaurantMenu = () => {
                       <div className="relative inline-flex items-center">
                         <select
                           value={item.status}
-                          className={`appearance-none rounded-md pl-3 pr-8 py-1.5 text-xs font-semibold tracking-wide transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${statusChipStyles[item.status]
-                            }`}
+                          className={`appearance-none rounded-md pl-3 pr-8 py-1.5 text-xs font-semibold tracking-wide transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${
+                            statusChipStyles[item.status]
+                          }`}
                           onChange={(e) => {
-                            // Handle status change logic here
+                            handleStatusChange(item._id, e.target.value);
                           }}
                         >
                           <option value="available">
@@ -152,10 +163,11 @@ const RestaurantMenu = () => {
 
                     <div className="flex gap-2">
                       <button
-                        className={`rounded flex items-center justify-center ${item.isTopRated
-                          ? " text-(--color-primary)"
-                          : "text-(--color-secondary)"
-                          }`}
+                        className={`rounded flex items-center justify-center ${
+                          item.isTopRated
+                            ? " text-(--color-primary)"
+                            : "text-(--color-secondary)"
+                        }`}
                         title={
                           item.isTopRated ? "Top Rated" : "Mark as Top Rated"
                         }
@@ -168,10 +180,11 @@ const RestaurantMenu = () => {
                         <FaAward className="" />
                       </button>
                       <button
-                        className={`rounded flex items-center justify-center ${item.isRecommended
-                          ? "text-(--color-primary)"
-                          : "text-(--color-secondary)"
-                          }`}
+                        className={`rounded flex items-center justify-center ${
+                          item.isRecommended
+                            ? "text-(--color-primary)"
+                            : "text-(--color-secondary)"
+                        }`}
                         onClick={() => {
                           setSelectedItem(item);
                           setModalMode("recommended");
@@ -186,10 +199,11 @@ const RestaurantMenu = () => {
                         <AiTwotoneLike className="" />
                       </button>
                       <button
-                        className={`px-1 py-0.5 rounded flex items-center justify-center text-xs ${item.isNew
-                          ? "text-(--color-primary) border border-(--color-primary)"
-                          : "text-(--color-secondary) border border-(--color-secondary)"
-                          }`}
+                        className={`px-1 py-0.5 rounded flex items-center justify-center text-xs ${
+                          item.isNew
+                            ? "text-(--color-primary) border border-(--color-primary)"
+                            : "text-(--color-secondary) border border-(--color-secondary)"
+                        }`}
                         onClick={() => {
                           setSelectedItem(item);
                           setModalMode("new");
@@ -249,6 +263,7 @@ const RestaurantMenu = () => {
           modalMode={modalMode}
           isOpen={isControlsModalOpen}
           onClose={() => setIsControlsModalOpen(false)}
+          onActionSuccess={fetchMenuItems}
         />
       )}
 
@@ -256,6 +271,17 @@ const RestaurantMenu = () => {
         <AddNewItemModal
           isOpen={isAddNewItemModalOpen}
           onClose={() => setIsAddNewItemModalOpen(false)}
+          onActionSuccess={fetchMenuItems}
+        />
+      )}
+
+      {isEditViewItemModalOpen && (
+        <EditOrViewItem
+          selectedItem={selectedItem}
+          modalMode={modalMode}
+          isOpen={isEditViewItemModalOpen}
+          onClose={() => setIsEditViewItemModalOpen(false)}
+          onActionSuccess={fetchMenuItems}
         />
       )}
     </>
