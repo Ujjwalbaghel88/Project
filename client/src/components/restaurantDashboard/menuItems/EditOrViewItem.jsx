@@ -119,7 +119,7 @@ const EditOrViewItem = ({
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
-          "Unable to update item details. Please try again.",
+        "Unable to update item details. Please try again.",
       );
     } finally {
       setIsSubmitting(false);

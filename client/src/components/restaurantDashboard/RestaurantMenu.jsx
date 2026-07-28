@@ -42,7 +42,7 @@ const RestaurantMenu = () => {
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
-          "Unknown error occurred while fetching menu items. Please try again.",
+        "Unknown error occurred while fetching menu items. Please try again.",
       );
     } finally {
       setIsLoading(false);
@@ -64,7 +64,7 @@ const RestaurantMenu = () => {
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
-          "Unable to update item status. Please try again.",
+        "Unable to update item status. Please try again.",
       );
     }
   };
@@ -140,9 +140,8 @@ const RestaurantMenu = () => {
                       <div className="relative inline-flex items-center">
                         <select
                           value={item.status}
-                          className={`appearance-none rounded-md pl-3 pr-8 py-1.5 text-xs font-semibold tracking-wide transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${
-                            statusChipStyles[item.status]
-                          }`}
+                          className={`appearance-none rounded-md pl-3 pr-8 py-1.5 text-xs font-semibold tracking-wide transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-(--color-primary) ${statusChipStyles[item.status]
+                            }`}
                           onChange={(e) => {
                             handleStatusChange(item._id, e.target.value);
                           }}
@@ -163,11 +162,10 @@ const RestaurantMenu = () => {
 
                     <div className="flex gap-2">
                       <button
-                        className={`rounded flex items-center justify-center ${
-                          item.isTopRated
+                        className={`rounded flex items-center justify-center ${item.isTopRated
                             ? " text-(--color-primary)"
                             : "text-(--color-secondary)"
-                        }`}
+                          }`}
                         title={
                           item.isTopRated ? "Top Rated" : "Mark as Top Rated"
                         }
@@ -180,11 +178,10 @@ const RestaurantMenu = () => {
                         <FaAward className="" />
                       </button>
                       <button
-                        className={`rounded flex items-center justify-center ${
-                          item.isRecommended
+                        className={`rounded flex items-center justify-center ${item.isRecommended
                             ? "text-(--color-primary)"
                             : "text-(--color-secondary)"
-                        }`}
+                          }`}
                         onClick={() => {
                           setSelectedItem(item);
                           setModalMode("recommended");
@@ -199,11 +196,10 @@ const RestaurantMenu = () => {
                         <AiTwotoneLike className="" />
                       </button>
                       <button
-                        className={`px-1 py-0.5 rounded flex items-center justify-center text-xs ${
-                          item.isNew
+                        className={`px-1 py-0.5 rounded flex items-center justify-center text-xs ${item.isNew
                             ? "text-(--color-primary) border border-(--color-primary)"
                             : "text-(--color-secondary) border border-(--color-secondary)"
-                        }`}
+                          }`}
                         onClick={() => {
                           setSelectedItem(item);
                           setModalMode("new");
