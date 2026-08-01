@@ -72,7 +72,7 @@ const RestaurantDetailsPage = () => {
                 </div>
 
                 {/* Right: Menu */}
-                <RestaurantMenu menuItems={details.menuItems} />
+                <RestaurantMenu menuItems={details.menuItems} restaurantId={restaurant._id} restaurantName={restaurant.restaurantName} />
             </div>
         </div>
     );
