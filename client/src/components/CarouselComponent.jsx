@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import bgImage1 from "../assets/carousel/bgImage1.jpg";
 import bgImage2 from "../assets/carousel/bgImage2.jpg";
 import bgImage3 from "../assets/carousel/bgImage3.jpg";
 import bgImage4 from "../assets/carousel/bgImage4.jpg";
+import bgVideo from "../assets/carousel/bgVideo.mp4"; // Import the video file
+
 
 const CarouselComponent = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
+  const videoRef = useRef(null);
 
-  const images = [bgImage1, bgImage2, bgImage3, bgImage4];
+  const images = [bgImage1, bgImage2, bgImage3, bgImage4, bgVideo];
+ 
 
   // Auto-rotate carousel
   useEffect(() => {
@@ -21,6 +25,21 @@ const CarouselComponent = () => {
 
     return () => clearInterval(interval);
   }, [autoPlay, images.length]);
+
+  // Start the video whenever its slide becomes active and pause it otherwise.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (currentSlide === images.length - 1 || currentSlide === images.length - 2) {
+      video.currentTime = 0;
+      video.play().catch(() => {
+        // The video is muted, but some browsers can still delay autoplay.
+      });
+    } else {
+      video.pause();
+    }
+  }, [currentSlide, images.length]);
 
   const goToSlide = (index) => {
     setCurrentSlide(index);
@@ -51,11 +70,25 @@ const CarouselComponent = () => {
             index === currentSlide ? "opacity-100" : "opacity-0"
           }`}
         >
-          <img
-            src={image}
-            alt={`Slide ${index + 1}`}
-            className="w-full h-full object-cover"
-          />
+          {image === bgVideo ? (
+            <video
+              ref={videoRef}
+              src={image}
+              aria-label={`Slide ${index + 1}`}
+              className="w-full h-full object-cover"
+              autoPlay={index === currentSlide}
+              muted
+              loop
+              playsInline
+              preload="auto"
+            />
+          ) : (
+            <img
+              src={image}
+              alt={`Slide ${index + 1}`}
+              className="w-full h-full object-cover"
+            />
+          )}
         </div>
       ))}
 
