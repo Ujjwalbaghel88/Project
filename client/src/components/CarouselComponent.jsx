@@ -21,7 +21,7 @@ const CarouselComponent = () => {
 
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % images.length);
-    }, 5000); // Change slide every 5 seconds
+    }, 6000); // Change slide every 6 seconds
 
     return () => clearInterval(interval);
   }, [autoPlay, images.length]);
