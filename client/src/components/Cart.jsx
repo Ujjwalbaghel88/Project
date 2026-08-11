@@ -1,6 +1,9 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
+import api from "../config/ApiConfig";
+import toast from "react-hot-toast";
 import { foodTypeDot } from "./publicRestaurantDetails/helpers";
 import {
     IoCartOutline,
@@ -13,11 +16,146 @@ import {
     IoIosRemoveCircleOutline,
 } from "react-icons/io";
 import { MdOutlineRestaurantMenu } from "react-icons/md";
+import { useState } from "react";
 
 const Cart = () => {
-    const { cart, totalItems, totalPrice, increaseItem, decreaseItem, removeItem, clearCart } =
-        useCart();
+    const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+    const {
+        cart,
+        totalItems,
+        totalPrice,
+        increaseItem,
+        decreaseItem,
+        removeItem,
+        clearCart,
+    } = useCart();
+    const { isLogin, role, user } = useAuth();
     const navigate = useNavigate();
+
+    const loadRazorpayScript = () => {
+        return new Promise((resolve) => {
+            // Already loaded (e.g. user opened checkout before)
+            if (window.Razorpay) {
+                resolve(true);
+                return;
+            }
+
+            const script = document.createElement("script");
+            script.src = "https://checkout.razorpay.com/v1/checkout.js";
+            script.async = true;
+            script.onload = () => resolve(true);
+            script.onerror = () => resolve(false);
+            document.body.appendChild(script);
+        });
+    };
+
+    const handlePlaceOrder = async () => {
+        // 1. Gaurd Check
+        if (!isLogin) {
+            toast.error("Please login first");
+            navigate("/login");
+            return;
+        }
+
+        if (role !== "customer") {
+            toast.error("Only customer can place order");
+            return;
+        }
+
+        if (!cart?.items?.length) {
+            toast.error("Cart is empty");
+            return;
+        }
+
+        try {
+            setIsPlacingOrder(true);
+
+            // 2. Create the app-level order in our database
+            const createOrderRes = await api.post("/order/create", {
+                restaurantId: cart.restaurantId,
+                paymentMethod: "upi",
+                orderItems: cart.items.map((i) => ({
+                    itemId: i._id,
+                    quantity: i.quantity,
+                })),
+            });
+            const appOrderId = createOrderRes?.data?.data?._id;
+
+            // 3. Ask our backend to create a Razorpay order
+            //    Backend talks to Razorpay API → returns razorpayOrderId + amount
+            const paymentOrderRes = await api.post("/payment/create-order", {
+                orderId: appOrderId,
+            });
+            const paymentData = paymentOrderRes?.data?.data;
+
+            // 4. Load the Razorpay JS SDK
+            const loaded = await loadRazorpayScript();
+            if (!loaded) {
+                toast.error("Razorpay SDK failed to load");
+                return;
+            }
+
+            // 5. Open the Razorpay checkout popup
+            const options = {
+                key: paymentData.key, // Your Key ID
+                amount: paymentData.amount, // In paise (already set by backend)
+                currency: paymentData.currency, // "INR"
+                name: "Cravings",
+                description: "Food Order Payment",
+                order_id: paymentData.razorpayOrderId, // The Razorpay order ID (not our DB ID)
+
+                // 6. Called by Razorpay when payment SUCCEEDS
+                handler: async function (response) {
+                    // response contains:
+                    //   razorpay_order_id   - the Razorpay order ID
+                    //   razorpay_payment_id - the payment transaction ID
+                    //   razorpay_signature  - HMAC signature to verify on backend
+
+                    try {
+                        await api.post("/payment/verify", {
+                            orderId: appOrderId,
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                        });
+
+                        toast.success("Payment successful!");
+                        clearCart();
+                        navigate("/customer-dashboard");
+                    } catch (err) {
+                        toast.error(
+                            err.response?.data?.message || "Payment verification failed",
+                        );
+                    }
+                },
+
+                prefill: {
+                    // Pre-fill customer details (optional)
+                    name: user.fullName,
+                    email: user.email,
+                },
+
+                theme: { color: "#c2410c" }, // Brand color
+
+                modal: {
+                    ondismiss: () => toast.error("Payment cancelled"),
+                },
+            };
+
+            const rzp = new window.Razorpay(options);
+
+            // Called when payment FAILS inside the popup
+            rzp.on("payment.failed", function (response) {
+                toast.error(`Payment failed: ${response.error.description}`);
+            });
+
+            rzp.open(); // Open the popup!
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Something went wrong");
+        } finally {
+            setIsPlacingOrder(false);
+        }
+    };
 
     if (!cart.items.length) {
         return (
@@ -160,9 +298,7 @@ const Cart = () => {
 
                         <div className="space-y-2 text-sm mb-4">
                             <div className="flex justify-between text-(--color-secondary)">
-                                <span>
-                                    Items ({totalItems})
-                                </span>
+                                <span>Items ({totalItems})</span>
                                 <span>₹{totalPrice.toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between text-(--color-secondary)">
@@ -179,12 +315,11 @@ const Cart = () => {
                         </div>
 
                         <button
+                            disabled={isPlacingOrder}
                             className="w-full py-3 bg-(--color-primary) text-(--color-primary-content) rounded-xl font-semibold text-sm hover:opacity-90 transition"
-                            onClick={() => {
-                                // TODO: wire up to checkout / order placement
-                            }}
+                            onClick={handlePlaceOrder}
                         >
-                            Place Order
+                            {isPlacingOrder ? "Processing..." : "Place Order"}
                         </button>
 
                         <Link
