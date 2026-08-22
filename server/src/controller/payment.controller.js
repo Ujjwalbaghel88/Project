@@ -4,17 +4,29 @@ import Order from "../models/order.model.js";
 import Customer from "../models/customer.model.js";
 
 // Lazily create Razorpay instance so missing keys fail loudly
-const getRazorpayInstance = () =>
-    new Razorpay({
+const getRazorpayInstance = () => {
+    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+        const error = new Error(
+            "Razorpay is not configured. Add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET to server/.env",
+        );
+        error.statusCode = 503;
+        throw error;
+    }
+
+    return new Razorpay({
         key_id: process.env.RAZORPAY_KEY_ID,
         key_secret: process.env.RAZORPAY_KEY_SECRET,
     });
+};
 
 // ─── Helper: find a customer's order safely ─────────────────────────────────
 const getCustomerOrder = async (userId, orderId) => {
     const customer = await Customer.findOne({ customerId: userId });
-    if (!customer) return null;
-    return Order.findOne({ _id: orderId, customerId: customer._id });
+    // Older/newly created orders may be linked directly to the user when no
+    // customer profile exists. Accept either owned identifier so checkout can
+    // continue while still restricting access to the signed-in customer.
+    const customerIds = customer ? [customer._id, userId] : [userId];
+    return Order.findOne({ _id: orderId, customerId: { $in: customerIds } });
 };
 
 // ─── POST /payment/create-order ──────────────────────────────────────────────
