@@ -58,7 +58,8 @@ app.listen(port, async () => {
     console.log("Cloudinary Connected :");
     console.log(result);
   } catch (error) {
-    console.log(error.message);
-    process.exit(1);
+    // Cloudinary is used by upload features, but should not take down the API
+    // when its credentials or network connection are temporarily unavailable.
+    console.warn("Cloudinary connection failed:", error.message);
   }
 });
