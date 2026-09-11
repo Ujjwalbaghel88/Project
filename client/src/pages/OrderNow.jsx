@@ -172,8 +172,8 @@ const OrderNow = () => {
               key={type.value}
               onClick={() => setSelectedType(type.value)}
               className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition font-medium ${selectedType === type.value
-                  ? "bg-(--color-primary) text-(--color-primary-content) border-(--color-primary)"
-                  : "bg-white text-(--color-base-content) border-(--color-base-300) hover:border-(--color-primary)"
+                ? "bg-(--color-primary) text-(--color-primary-content) border-(--color-primary)"
+                : "bg-white text-(--color-base-content) border-(--color-base-300) hover:border-(--color-primary)"
                 }`}
             >
               {type.icon}
@@ -222,8 +222,8 @@ const OrderNow = () => {
                   {/* Open / Closed */}
                   <span
                     className={`absolute top-3 left-3 text-[11px] font-bold px-2.5 py-0.5 rounded-full ${restaurant.isOpen
-                        ? "bg-green-500 text-white"
-                        : "bg-black/60 text-white"
+                      ? "bg-green-500 text-white"
+                      : "bg-black/60 text-white"
                       }`}
                   >
                     {restaurant.isOpen ? "● Open" : "● Closed"}
@@ -306,5 +306,6 @@ const OrderNow = () => {
     </div>
   );
 };
+
 
 export default OrderNow;
