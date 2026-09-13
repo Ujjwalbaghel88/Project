@@ -83,7 +83,8 @@ const Home = () => {
           r.cuisines.some((c) =>
             c.toLowerCase().includes(searchQuery.toLowerCase()),
           ) ||
-          r.city.toLowerCase().includes(searchQuery.toLowerCase()),
+          r.city.toLowerCase().includes(searchQuery.toLowerCase()), 
+          
       );
     }
 
