@@ -18,6 +18,7 @@ import {
 import { MdOutlineRestaurantMenu } from "react-icons/md";
 import { useState } from "react";
 
+
 const Cart = () => {
     const [isPlacingOrder, setIsPlacingOrder] = useState(false);
     const {
