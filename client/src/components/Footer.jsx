@@ -3,7 +3,6 @@ import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import logoCircle from "../assets/circleLogo.png";
 
-
 const Footer = () => {
   const location = useLocation().pathname;
   const currentYear = new Date().getFullYear();
