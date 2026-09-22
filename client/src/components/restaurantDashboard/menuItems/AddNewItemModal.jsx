@@ -32,6 +32,7 @@ const foodTypes = [
   "Vegetarian",
   "Non-Vegetarian",
   "Vegan",
+  "Dairy",
   "Gluten-Free",
   "Dairy-Free",
   "Egg-Free",

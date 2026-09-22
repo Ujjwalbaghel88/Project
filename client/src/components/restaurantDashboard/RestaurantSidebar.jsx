@@ -17,8 +17,8 @@ const RestaurantSidebar = ({ activeTab, setActiveTab }) => {
     <li
       key={tab.value}
       className={`cursor-pointer p-2 rounded text-(--color-neutral) flex items-center gap-3 ${activeTab === tab.value
-          ? "bg-(--color-primary) text-(--color-primary-content) font-semibold"
-          : "hover:bg-(--color-secondary) hover:text-(--color-secondary-content) transition-colors duration-200"
+        ? "bg-(--color-primary) text-(--color-primary-content) font-semibold"
+        : "hover:bg-(--color-secondary) hover:text-(--color-secondary-content) transition-colors duration-200"
         }`}
       onClick={() => setActiveTab(tab.value)}
     >
@@ -40,4 +40,4 @@ const RestaurantSidebar = ({ activeTab, setActiveTab }) => {
   );
 };
 
-export default RestaurantSidebar;
+export default RestaurantSidebar; 
