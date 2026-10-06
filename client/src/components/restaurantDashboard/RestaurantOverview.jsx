@@ -19,8 +19,6 @@ const RestaurantOverview = () => {
         <p className="text-(--color-neutral) text-sm">No recent orders</p>
       </div>
     </div>
-    
-
   );
 };
 
